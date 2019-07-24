@@ -39,17 +39,24 @@
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Item.cs" />
-    <Compile Include="ItemValidator.cs" />
-    <Compile Include="ItemWithSpecialPrice.cs" />
-    <Compile Include="ItemWithSpecialPriceValidator.cs" />
+    <Compile Include="Basket.cs" />
+    <Compile Include="Items\Item.cs" />
+    <Compile Include="Items\ItemManager.cs" />
+    <Compile Include="Items\ItemValidator.cs" />
     <Compile Include="PointOfSaleTerminal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpecialPrices\SpecialPrice.cs" />
+    <Compile Include="SpecialPrices\SpecialPricesManager.cs" />
+    <Compile Include="SpecialPrices\SpecialPriceValidator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

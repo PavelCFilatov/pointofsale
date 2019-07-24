@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using PointOfSale.Core;
+using PointOfSale.Core.Items;
+using PointOfSale.Core.SpecialPrices;
 
 namespace PointOfSale.Tests
 {
@@ -12,16 +14,28 @@ namespace PointOfSale.Tests
         [SetUp]
         public void SetUp()
         {
-            var item = new List<Item>
+            var productA = new Item("A", 1.25m);
+            var productC = new Item("C", 1);
+
+            var items = new List<Item>
             {
-                new ItemWithSpecialPrice("A", 1.25m, 3, 3),
+                productA,
                 new Item("B", 4.25m),
-                new ItemWithSpecialPrice("C", 1, 6, 5),
+                productC,
                 new Item("D", 0.75m),
             };
 
-            _terminal = new PointOfSaleTerminal();
-            _terminal.SetPricing(item);
+            var specialPrices = new List<SpecialPrice>
+            {
+                new SpecialPrice(productA, 3, 3),
+                new SpecialPrice(productC, 6, 5),
+            };
+
+            var itemManager = new ItemManager(new ItemValidator());
+            var specialPricesManager = new SpecialPricesManager(itemManager, new SpecialPriceValidator());
+            var basket = new Basket(itemManager, specialPricesManager);
+            _terminal = new PointOfSaleTerminal(itemManager, specialPricesManager, basket);
+            _terminal.SetPricing(items, specialPrices);
         }
 
         [Test]

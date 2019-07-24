@@ -1,62 +1,55 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using PointOfSale.Core.Items;
+using PointOfSale.Core.SpecialPrices;
 
 namespace PointOfSale.Core
 {
     public class PointOfSaleTerminal
     {
-        private readonly List<Item> _items = new List<Item>();
+        private readonly IItemManager _itemManager;
+        private readonly ISpecialPricesManager _specialPricesManager;
+        private readonly IBasket _basket;
 
-        private readonly Dictionary<string, uint> _basket = new Dictionary<string, uint>();
-
-        public void SetPricing(IEnumerable<Item> items)
+        public PointOfSaleTerminal(
+            IItemManager itemManager,
+            ISpecialPricesManager specialPricesManager,
+            IBasket basket)
         {
-            _items.AddRange(items);
+            _itemManager = itemManager ?? throw new ArgumentNullException("ItemManager is null");
+            _specialPricesManager = specialPricesManager ?? throw new ArgumentNullException("SpecialPricesManager is null");
+            _basket = basket ?? throw new ArgumentNullException("Basket is null");
         }
 
-        public bool Scan(string itemName)
+        /// <summary>
+        /// Sets list of available items and available special prices.
+        /// </summary>
+        /// <param name="items">List of available items.</param>
+        /// <param name="specialPrices">List of special prices.</param>
+        /// <returns>List of validation errors for passed items and special prices.</returns>
+        public List<string> SetPricing(IEnumerable<Item> items, IEnumerable<SpecialPrice> specialPrices)
         {
-            if (_items.Any(x => x.ItemName == itemName))
-            {
-                if (_basket.ContainsKey(itemName))
-                {
-                    _basket[itemName] += 1;
-                }
-                else
-                {
-                    _basket.Add(itemName, 1);
-                }
+            
+            var itemsValidationErrors = items.Select(_itemManager.AddItem)
+                .Where(x => !x.Success)
+                .Select(x => x.ValidationMessage);
 
-                return true;
-            }
+            var specialPricesValidationMessages = specialPrices.Select(_specialPricesManager.AddSpecialPrice)
+                .Where(x => !x.Success)
+                .Select(x => x.ValidationMessage);
 
-            return false;
+            return itemsValidationErrors.Union(specialPricesValidationMessages).ToList();
+        }
+
+        public void Scan(string itemName)
+        {
+            _basket.Scan(itemName);
         }
 
         public decimal CalculateTotal()
         {
-            return _basket
-                .Select(x => calculateItemTotal(_items.Single(i => i.ItemName == x.Key), x.Value))
-                .Sum();
-        }
-
-        private static decimal calculateItemTotal(Item item, uint itemQuantity)
-        {
-            if (item.HasSpecialVolumeDeal)
-            {
-                var itemWithSpecialPrice = item as ItemWithSpecialPrice;
-                var specialVolumes = itemQuantity / itemWithSpecialPrice.SpecialVolume;
-                decimal total = specialVolumes * itemWithSpecialPrice.SpecialVolumePrice;
-
-                var remainedItems = itemQuantity - (specialVolumes * itemWithSpecialPrice.SpecialVolume);
-                total += remainedItems * item.ItemPrice;
-
-                return total;
-            }
-            else
-            {
-                return itemQuantity * item.ItemPrice;
-            }
+            return _basket.CalculateTotal();
         }
     }
 }

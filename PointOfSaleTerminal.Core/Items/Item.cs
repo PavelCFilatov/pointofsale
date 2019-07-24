@@ -1,4 +1,4 @@
-﻿namespace PointOfSale.Core
+﻿namespace PointOfSale.Core.Items
 {
     public class Item
     {
@@ -11,7 +11,5 @@
         public string ItemName { get; }
 
         public decimal ItemPrice { get; }
-
-        public virtual bool HasSpecialVolumeDeal => false;
     }
 }

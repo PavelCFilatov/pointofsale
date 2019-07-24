@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace PointOfSale.Core
+namespace PointOfSale.Core.Items
 {
     /// <summary>
     /// It is not required by task and current code.
