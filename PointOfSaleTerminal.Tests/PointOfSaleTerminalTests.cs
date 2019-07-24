@@ -14,9 +14,9 @@ namespace PointOfSale.Tests
         {
             var item = new List<Item>
             {
-                new Item("A", 1.25m, 3, 3),
+                new ItemWithSpecialPrice("A", 1.25m, 3, 3),
                 new Item("B", 4.25m),
-                new Item("C", 1, 6, 5),
+                new ItemWithSpecialPrice("C", 1, 6, 5),
                 new Item("D", 0.75m),
             };
 

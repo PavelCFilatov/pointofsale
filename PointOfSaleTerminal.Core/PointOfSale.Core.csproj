@@ -43,6 +43,8 @@
   <ItemGroup>
     <Compile Include="Item.cs" />
     <Compile Include="ItemValidator.cs" />
+    <Compile Include="ItemWithSpecialPrice.cs" />
+    <Compile Include="ItemWithSpecialPriceValidator.cs" />
     <Compile Include="PointOfSaleTerminal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

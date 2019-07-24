@@ -44,10 +44,11 @@ namespace PointOfSale.Core
         {
             if (item.HasSpecialVolumeDeal)
             {
-                var specialVolumes = itemQuantity / item.SpecialVolume;
-                decimal total = specialVolumes * item.SpecialVolumePrice;
+                var itemWithSpecialPrice = item as ItemWithSpecialPrice;
+                var specialVolumes = itemQuantity / itemWithSpecialPrice.SpecialVolume;
+                decimal total = specialVolumes * itemWithSpecialPrice.SpecialVolumePrice;
 
-                var remainedItems = itemQuantity - (specialVolumes * item.SpecialVolume);
+                var remainedItems = itemQuantity - (specialVolumes * itemWithSpecialPrice.SpecialVolume);
                 total += remainedItems * item.ItemPrice;
 
                 return total;
